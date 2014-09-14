@@ -50,7 +50,7 @@ void insertar(Nodo nodo, Rectangulo rect) {
 	float area_inc_min; // incremento mínimo
 	float area;         // variable para albergar el incremento de área en cada iteración del for
 	
-	// si el nodo es un nodo hoja (su primer MBR es una hoja) o está vacío.
+	// si el nodo es un nodo hoja (su primer MBR es una hoja).
 	// insertar rectangulo como un MBR
 	if (nodo.ultimo == -1 || nodo.mbr[0].nodo_hijo == -1) {
 		MBR nueva_hoja;
