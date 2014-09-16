@@ -24,9 +24,8 @@ Dynamic_array* buscar(Nodo nodo, Rectangulo rect) {
 			// seguir en profundidad
 			} else {
 				// buscar en los hijos
-				// leer nodo indicado en nodo.mbr[i].nodo_hijo
-				Nodo nodo_hijo = leernodo();
-				Dynamic_array *rects_hijos = buscar(rect, nodo_hijo);
+				Nodo nodo_hijo = leer_nodo(nodo.mbr[i].nodo_hijo);
+				Dynamic_array *rects_hijos = buscar(nodo_hijo, rect);
 				
 				// se insertan en el grupo general
 				for(j=0;j<rects_hijos->used;j++) {
@@ -49,35 +48,36 @@ void insertar(Nodo nodo, Rectangulo rect) {
 	int i, j;           // iteradores
 	int i_min = 0;      // indice del MBR con menor incremento de área.
 	float area_inc_min; // incremento mínimo
-	float area;         // variable para albergar el incremento de área en cada iteración del for
+	float area_inc;     // variable para albergar el incremento de área en cada iteración del for
 	
 	// si el nodo es un nodo hoja (su primer MBR es una hoja).
 	// insertar rectangulo como un MBR
 	if (nodo.ultimo == -1 || nodo.mbr[0].nodo_hijo == -1) {
 		MBR nueva_hoja;
-		nueva_hoja->rect = rect;
-		nueva_hoja->nodo_hijo = -1;
+		nueva_hoja.rect = rect;
+		nueva_hoja.nodo_hijo = -1;
 		
 		// insertar en el nodo actual
 		// i.e. escribir en el archivo códificación
 	} else {
 
-		area_inc_min = incremento_area(nodo->mbr[i_min], rect);	
+		area_inc_min = incremento_area(nodo.mbr[i_min], rect);	
 
 		// recorremos los MBR's del nodo e identificamos el de menor área.
 		for(i=0;i<=nodo.ultimo;i++) {		
 			// calcular el incremento de área para cada MBR
-			area = incremento_area(nodo->mbr[i], rect);
-		
+			area_inc = incremento_area(nodo.mbr[i], rect);
+			
+			// se asume que el primer MBR es la mín área
 			if (i > 0) {
-				if (area < area_inc_min) {
+				if (area_inc < area_inc_min) {
 					i_min = i;
-					area_inc_min = incremento_area(nodo->mbr[i_min], rect);
+					area_inc_min = incremento_area(nodo.mbr[i_min], rect);
 				// si los incrementos son iguales => elegir el de menor área
-				} else if (area == inc_min) {				
-					if (area(nodo->mbr[i]->rect) < area(nodo->mbr[i_min]->rect)) {
+				} else if (area_inc == area_inc_min) {				
+					if (area(nodo.mbr[i].rect) < area(nodo.mbr[i_min].rect)) {
 						i_min = i;
-						area_inc_min = incremento_area(nodo->mbr[i_min], rect);
+						area_inc_min = incremento_area(nodo.mbr[i_min], rect);
 					} 
 					// si las areas son iguales nos quedamos con el primer área mínima que encontramos.
 					// i.e. no se hace nada más
