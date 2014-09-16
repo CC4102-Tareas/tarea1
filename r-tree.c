@@ -67,8 +67,8 @@ void insertar_nodo(Nodo nodo) {
         }
 
 	fwrite(&(nodo.nodo_id), sizeof(int), 1, fptr);
-	fwrite(&(nodo.nodo_pader), sizeof(int), 1, fptr);
-	fwrite(&(nodo_pos_mbr_padre), sizeof(int), 1, fptr);
+	fwrite(&(nodo.nodo_padre), sizeof(int), 1, fptr);
+	fwrite(&(nodo.pos_mbr_padre), sizeof(int), 1, fptr);
 	fwrite(&(nodo.ultimo), sizeof(int), 1, fptr);
         fwrite(&(nodo.mbr), sizeof(MBR), 2*T, fptr);
 
@@ -82,19 +82,19 @@ actualizar_nodo(Nodo nodo) {
         FILE *fptr;
 
         // se abre el archivo para lectura
-        pftr = fopen(NAME_FILE, "w");
+        fptr = fopen(NAME_FILE, "w");
 
-        if(fseek(pftr, nodo.nodo_id*TAMANO_PAGINA, SEEK_SET)) {
+        if(fseek(fptr, nodo.nodo_id*TAMANO_PAGINA, SEEK_SET)) {
                 printf("Error al intentar posicionarse en la página.");
         }
 
-        fwrite(fptr, sizeof(int), 1, nodo.nodo_id);
-	fwrite(fptr, sizeof(int), 1, nodo.nodo_padre);
-        fwrite(fptr, sizeof(int), 1, nodo.pos_mbr_adre);
-        fwrite(fptr, sizeof(int), 1, nodo.ultimo);
-        fwrite(fptr, sizeof(MBR), 2*T, nodo.mbr);
+	fwrite(&(nodo.nodo_id), sizeof(int), 1, fptr);
+        fwrite(&(nodo.nodo_padre), sizeof(int), 1, fptr);
+        fwrite(&(nodo.pos_mbr_padre), sizeof(int), 1, fptr);
+        fwrite(&(nodo.ultimo), sizeof(int), 1, fptr);
+        fwrite(&(nodo.mbr), sizeof(MBR), 2*T, fptr);
 
-        fclose(pftr);
+        fclose(fptr);
 }
 /**
 	elimina un nodo
