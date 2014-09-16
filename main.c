@@ -3,6 +3,7 @@
 #include "estructuras.c"
 #include "dynamic_array.c"
 #include "operadores.c"
+#include "r-tree.c"
 
 /**
 	busca un rectángulo dentro del R-Tree.

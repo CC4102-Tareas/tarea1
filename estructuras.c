@@ -40,6 +40,7 @@ typedef struct
 */
 typedef struct 
 {
+	int nodo_id;       // identificador de nodo. Es equivalente a la posición del nodo en el archivo.
 	int nodo_padre;    // posición del nodo padre en el archivo.
 	int pos_mbr_padre; // posición del MBR padre en el nodo padre(índice del arreglo MBR).
 	int ultimo;        // último indice ocupado en mbr.
