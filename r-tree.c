@@ -28,7 +28,7 @@ void init_rtree() {
 /**
 	Leer nodo de un r-tree
 */
-Nodo* leer_nodo(int numero_nodo) {
+Nodo leer_nodo(int numero_nodo) {
 	FILE *fptr;
 	
 	// se abre el archivo para lectura
@@ -39,6 +39,7 @@ Nodo* leer_nodo(int numero_nodo) {
 	}
 
 	Nodo nodo;
+
 	//crear nodo con los datos leidos
 	fread(&(nodo.nodo_id), sizeof(int), 1, fptr);
 	fread(&(nodo.nodo_padre), sizeof(int), 1, fptr);
@@ -65,11 +66,11 @@ void insertar_nodo(Nodo nodo) {
                 printf("Error al intentar posicionarse en la página.");
         }
 
-	fwrite(fptr, sizeof(int), 1, nodo.nodo_id);
-	fwrite(fptr, sizeof(int), 1, nodo.nodo_padre);
-	fwrite(fptr, sizeof(int), 1, nodo.pos_mbr_adre);
-	fwrite(fptr, sizeof(int), 1, nodo.ultimo);
-        fwrite(fptr, sizeof(MBR), 2*T, nodo.mbr);
+	fwrite(&(nodo.nodo_id), sizeof(int), 1, fptr);
+	fwrite(&(nodo.nodo_pader), sizeof(int), 1, fptr);
+	fwrite(&(nodo_pos_mbr_padre), sizeof(int), 1, fptr);
+	fwrite(&(nodo.ultimo), sizeof(int), 1, fptr);
+        fwrite(&(nodo.mbr), sizeof(MBR), 2*T, fptr);
 
         fclose(fptr);
 }
