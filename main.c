@@ -125,13 +125,12 @@ void linearSplit()
 	
 }
 */
+
 /**
 	===================================================================
 	MAIN
 	===================================================================
 	
-	Para compilar: gcc -o tarea1-CC4102 rectangulo.c
-	Para ejecutar: ./tarea1-CC4102
 */
 int main (int arc, char **argv) 
 {   
@@ -152,7 +151,7 @@ int main (int arc, char **argv)
         rect.vert_inf_izq = x1;
         rect.vert_sup_der = x2;
 
-        insertar_nodo(raiz, rect);
+        insertar(raiz, rect);
 	}
 
     return 0; // todo ok.
