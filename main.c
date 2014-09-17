@@ -133,14 +133,15 @@ void linearSplit()
 	
 */
 int main (int arc, char **argv) 
-{   
+{
+    printf("Inicio de experimento\n");   
 	// se inicializa el r-tree
 	Nodo raiz = init_rtree();
-    
+    printf("ok0");
     Punto x1;
     Punto x2;
     Rectangulo rect;
-
+    printf("ok1");
     int i;
     for(i=0;i<10;i++) {
         x1.x = 0;
@@ -150,7 +151,7 @@ int main (int arc, char **argv)
 
         rect.vert_inf_izq = x1;
         rect.vert_sup_der = x2;
-
+        printf("ok2");
         insertar(raiz, rect);
 	}
 

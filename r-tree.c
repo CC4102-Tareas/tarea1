@@ -93,8 +93,8 @@ Nodo init_rtree() {
 	if(status == 0)
 		printf("%s archivo eliminado.\n", NAME_FILE);
 	else {	
-		printf("Incapaz de eliminar archivo.\n");
-		perror("Error");
+		//printf("Incapaz de eliminar archivo.\n");
+		//perror("Error");
 	}
 
 	// crea el archivo
