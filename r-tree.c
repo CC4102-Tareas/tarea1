@@ -4,38 +4,6 @@
 #define NAME_FILE "r-tree.estructura"
 
 /**
-	Inicializa un r-tree.
-	Crea un archivo de nombre 'r-tree.estructura' y retorna el
-	nodo raiz del r.tree
-*/
-Nodo init_rtree() {
-	FILE *fptr;
-	int status;
- 
-	status = remove(NAME_FILE);
- 
-	if(status == 0)
-		printf("%s archivo eliminado.\n", NAME_FILE);
-	else {	
-		printf("Incapaz de eliminar archivo.\n");
-		perror("Error");
-	}
-
-	// crea el archivo
-	fptr = fopen(NAME_FILE, "w");
-
-	fclose(fptr);
-	
-	Nodo nodo;
-	nodo.nodo_id = 0;
-	nodo.nodo_padre = 0;
-	nodo.pos_mbr_padre = 0;
-	nodo.ultimo = -1;
-	
-	insertar_nodo(nodo);
-}
-
-/**
 	Leer nodo de un r-tree
 */
 Nodo leer_nodo(int numero_nodo) {
@@ -111,8 +79,35 @@ actualizar_nodo(Nodo nodo) {
 */
 
 
+/**
+	Inicializa un r-tree.
+	Crea un archivo de nombre 'r-tree.estructura' y retorna el
+	nodo raiz del r.tree
+*/
+Nodo init_rtree() {
+	FILE *fptr;
+	int status;
+ 
+	status = remove(NAME_FILE);
+ 
+	if(status == 0)
+		printf("%s archivo eliminado.\n", NAME_FILE);
+	else {	
+		printf("Incapaz de eliminar archivo.\n");
+		perror("Error");
+	}
 
+	// crea el archivo
+	fptr = fopen(NAME_FILE, "w");
 
-
-
+	fclose(fptr);
+	
+	Nodo nodo;
+	nodo.nodo_id = 0;
+	nodo.nodo_padre = 0;
+	nodo.pos_mbr_padre = 0;
+	nodo.ultimo = -1;
+	
+	insertar_nodo(nodo);
+}
 
