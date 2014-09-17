@@ -83,8 +83,10 @@ actualizar_nodo(Nodo nodo) {
 	Inicializa un r-tree.
 	Crea un archivo de nombre 'r-tree.estructura' y retorna el
 	nodo raiz del r.tree
+    Recibe dos rectangulos porque es la cantidad mínima que puede 
+    recibir la raiz.
 */
-Nodo init_rtree() {
+Nodo init_rtree(Rectangulo rect1, Rectangulo rect2) {
 	FILE *fptr;
 	int status;
  
@@ -106,7 +108,21 @@ Nodo init_rtree() {
 	nodo.nodo_id = 0;
 	nodo.nodo_padre = 0;
 	nodo.pos_mbr_padre = 0;
-	nodo.ultimo = -1;
+	nodo.ultimo = 1;
+    
+    // la raíz tiene como mínimo 2 rectangulos.   
+    // nuestro código modela una hoja como un MBR con nodo_hijo=-1
+    MBR mbr1;
+    MBR mbr2;
+    
+    mbr1.rect = rect1;
+    mbr1.nodo_hijo = -1;
+    mbr2.rect = rect2;
+    mbr2.nodo_hijo = -1;
+    
+    // se agregan al nodo raíz
+    nodo.mbr[0] = mbr1;
+    nodo.mbr[1] = mbr2;
 	
 	insertar_nodo(nodo);
 }

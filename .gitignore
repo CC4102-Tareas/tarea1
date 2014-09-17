@@ -1,4 +1,5 @@
 *.swp
+*.c~
 r-tree.estructura
 main
 exec.sh
