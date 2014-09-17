@@ -11,25 +11,31 @@
 int main (int arc, char **argv) 
 {
     printf("Inicio de experimento\n");   
-	// se inicializa el r-tree
-	Nodo raiz = init_rtree();
-    printf("ok0\n");
+	Nodo raiz;
+    
     Punto x1;
     Punto x2;
     Rectangulo rect;
-    printf("ok1\n");
+    Rectangulo rect0;
+
     int i;
     for(i=0;i<10;i++) {
         x1.x = 0;
         x1.y = 0;
-        x2.x = 3;
-        x2.y = 3;
+        x2.x = i+1;
+        x2.y = i+1;
 
         rect.vert_inf_izq = x1;
         rect.vert_sup_der = x2;
-        printf("ok2\n");
-        insertar(raiz, rect);
-        printf("ok3\n");
+        
+        if (i==0) {
+            rect0.vert_inf_izq = x1;
+            rect0.vert_sup_der = x2;
+        } else if(i==1) {
+            raiz = init_rtree(rect0, rect);
+        } else {
+            insertar(raiz, rect);
+        }
 	}
     
     return 0; // todo ok.
