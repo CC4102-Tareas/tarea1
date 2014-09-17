@@ -5,9 +5,10 @@
 
 /**
 	Inicializa un r-tree.
-	Crea un archivo de nombre 'r-tree.estructura'
+	Crea un archivo de nombre 'r-tree.estructura' y retorna el
+	nodo raiz del r.tree
 */
-void init_rtree() {
+Nodo init_rtree() {
 	FILE *fptr;
 	int status;
  
@@ -22,7 +23,16 @@ void init_rtree() {
 
 	// crea el archivo
 	fptr = fopen(NAME_FILE, "w");
+
 	fclose(fptr);
+	
+	Nodo nodo;
+	nodo.nodo_id = 0;
+	nodo.nodo_padre = 0;
+	nodo.pos_mbr_padre = 0;
+	nodo.ultimo = -1;
+	
+	insertar_nodo(nodo);
 }
 
 /**

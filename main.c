@@ -45,39 +45,43 @@ Dynamic_array* buscar(Nodo nodo, Rectangulo rect) {
 	Inserta un rectangulo en el arbol.
 */
 void insertar(Nodo nodo, Rectangulo rect) {
-	int i, j;           // iteradores
-	int i_min = 0;      // indice del MBR con menor incremento de área.
-	float area_inc_min; // incremento mínimo
-	float area_inc;     // variable para albergar el incremento de área en cada iteración del for
+	int i, j;                     // iteradores
+	int i_min = 0;     	      // indice del MBR con menor incremento de área.
+	Rectangulo rect_area_inc_min; // rectángulo producto del incremento mínimo
+	Rectangulo rect_area_inc;     // variable para albergar el incremento de área en cada iteración del for
 	
 	// si el nodo es un nodo hoja (su primer MBR es una hoja).
 	// insertar rectangulo como un MBR
-	if (nodo.ultimo == -1 || nodo.mbr[0].nodo_hijo == -1) {
+	if (nodo.mbr[0].nodo_hijo == -1) {
 		MBR nueva_hoja;
 		nueva_hoja.rect = rect;
 		nueva_hoja.nodo_hijo = -1;
 		
-		// insertar en el nodo actual
-		// i.e. escribir en el archivo códificación
+		nodo.ultimo++;
+		nodo.mbr[nodo.ultimo].rect = rect;
+		nodo.mbr[nodo.ultimo].nodo_hijo = -1;
+		
+		// persistir cambios en el archivo.
+		actualizar_nodo(nodo);
 	} else {
 
-		area_inc_min = incremento_area(nodo.mbr[i_min], rect);	
+		rect_area_inc_min = incremento_area(nodo.mbr[i_min], rect);	
 
 		// recorremos los MBR's del nodo e identificamos el de menor área.
 		for(i=0;i<=nodo.ultimo;i++) {		
 			// calcular el incremento de área para cada MBR
-			area_inc = incremento_area(nodo.mbr[i], rect);
+			rect_area_inc = incremento_area(nodo.mbr[i], rect);
 			
 			// se asume que el primer MBR es la mín área
 			if (i > 0) {
-				if (area_inc < area_inc_min) {
+				if (area(rect_area_inc) < area(rect_area_inc_min)) {
 					i_min = i;
-					area_inc_min = incremento_area(nodo.mbr[i_min], rect);
+					rect_area_inc_min = incremento_area(nodo.mbr[i_min], rect);
 				// si los incrementos son iguales => elegir el de menor área
-				} else if (area_inc == area_inc_min) {				
+				} else if (area(rect_area_inc) == area(rect_area_inc_min)) {				
 					if (area(nodo.mbr[i].rect) < area(nodo.mbr[i_min].rect)) {
 						i_min = i;
-						area_inc_min = incremento_area(nodo.mbr[i_min], rect);
+						rect_area_inc_min = incremento_area(nodo.mbr[i_min], rect);
 					} 
 					// si las areas son iguales nos quedamos con el primer área mínima que encontramos.
 					// i.e. no se hace nada más
@@ -86,11 +90,12 @@ void insertar(Nodo nodo, Rectangulo rect) {
 		}
 	
 		// persistir el incremento de área del MBR con indice i_min
-	
+		nodo.mbr[i_min].rect = rect_area_inc_min;
+		actualizar_nodo(nodo);
+
 		// buscar nodo hijo del MBR de incremento mínimo.
-		Nodo nodo_hijo = leer_nodo();
+		Nodo nodo_hijo = leer_nodo(nodo.mbr[i_min].nodo_hijo);
 		insertar(nodo_hijo, rect);
-		
 	}
 }
 
@@ -130,12 +135,11 @@ void linearSplit()
 */
 int main (int arc, char **argv) 
 {   
-	// archivo que contiene el R-tree
-	FILE *fp = fopen("R-Tree.estructura", "ab+");
-	// crear buffer del tamaño de una página
-	
-	
-	
+	// se inicializa el r-tree
+	Nodo raiz = init_rtree();
+    
+
+
 	
 	
 	

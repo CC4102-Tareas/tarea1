@@ -28,8 +28,20 @@ float area(Rectangulo rect)
 /**
 	Calcula el incremento de área de un mbr.
 */
-float inremento_area(MBR mbr, Rectangulo rect) {
-		
-	return ;
+Rectangulo incremento_area(MBR mbr, Rectangulo rect) {
+	Rectangulo rect_inc;
+	Punto pto1;
+	Punto pto2;
+
+	pto1.x = 0;
+	pto1.y = 0;
+	
+	pto2.x = 1;
+	pto2.y = 1;
+
+	rect_inc.vert_inf_izq = pto1;
+	rect_inc.vert_sup_der = pto2;
+
+	return rect_inc;
 }
 
