@@ -33,8 +33,10 @@ int main (int arc, char **argv)
             rect0.vert_sup_der = x2;
         } else if(i==1) {
             raiz = init_rtree(rect0, rect);
+            printf("Inicialización de r-tree\n");
         } else {
             insertar(raiz, rect);
+            printf("Se inserta rectangulo.\n");
         }
 	}
     

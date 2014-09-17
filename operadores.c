@@ -93,8 +93,12 @@ void insertar(Nodo nodo, Rectangulo rect) {
 	
 	// si el nodo es un nodo hoja (su primer MBR es una hoja).
 	// insertar rectangulo como un MBR
+    // TODO: Verificar si está lleno y agregar split.
+    printf("nodo_hijo=%d\n", nodo.mbr[0].nodo_hijo);
 	if (nodo.mbr[0].nodo_hijo == -1) {
-		MBR nueva_hoja;
+        printf("Insertar rectangulo.\n");
+		
+        MBR nueva_hoja;
 		nueva_hoja.rect = rect;
 		nueva_hoja.nodo_hijo = -1;
 		
@@ -105,7 +109,7 @@ void insertar(Nodo nodo, Rectangulo rect) {
 		// persistir cambios en el archivo.
 		actualizar_nodo(nodo);
 	} else {
-
+        printf("No es hoja. Buscar MBR de incremento mínimo.\n");
 		rect_area_inc_min = incremento_area(nodo.mbr[i_min], rect);	
 
 		// recorremos los MBR's del nodo e identificamos el de menor área.
