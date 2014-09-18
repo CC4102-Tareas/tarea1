@@ -6,7 +6,7 @@
 /**
 	Leer nodo de un r-tree
 */
-Nodo leer_nodo(int numero_nodo) {
+Nodo leer_nodo_en_disco(int numero_nodo) {
 	FILE *fptr;
 	
 	// se abre el archivo para lectura
@@ -33,7 +33,7 @@ Nodo leer_nodo(int numero_nodo) {
 /**
 	inserta un nodo en el R-tree
 */
-void insertar_nodo(Nodo nodo) {
+void insertar_nodo_en_disco(Nodo nodo) {
 	FILE *fptr;
 
     // se abre el archivo para lectura
@@ -56,7 +56,7 @@ void insertar_nodo(Nodo nodo) {
 /**
 	actualiza un nodo
 */
-actualizar_nodo(Nodo nodo) {
+actualizar_nodo_en_disco(Nodo nodo) {
     FILE *fptr;
 
     // se abre el archivo para lectura
@@ -125,7 +125,7 @@ Nodo init_rtree(Rectangulo rect1, Rectangulo rect2) {
     nodo.mbr[0] = mbr1;
     nodo.mbr[1] = mbr2;
 	
-    insertar_nodo(nodo);
+    insertar_nodo_en_disco(nodo);
 
     return nodo;
 }

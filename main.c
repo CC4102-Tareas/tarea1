@@ -19,7 +19,7 @@ int main (int arc, char **argv)
     Rectangulo rect0;
 
     int i;
-    for(i=0;i<10;i++) {
+    for(i=0;i<205;i++) {
         x1.x = 0;
         x1.y = 0;
         x2.x = i+1;
