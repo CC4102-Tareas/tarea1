@@ -103,16 +103,22 @@ Nodo insertar(Nodo nodo, Rectangulo rect) {
 	if (nodo.mbr[0].nodo_hijo == -1) {
         printf("Insertar rectangulo.\n");
 		
-        MBR nueva_hoja;
-		nueva_hoja.rect = rect;
-		nueva_hoja.nodo_hijo = -1;
+        // si está lleno
+        if (nodo.ultimo == 2*T-1) {
+            printf("Está lleno. Hacer split");
+            //TODO: llamar algoritmo de split
+        } else {
+            MBR nueva_hoja;
+		    nueva_hoja.rect = rect;
+		    nueva_hoja.nodo_hijo = -1;
 		
-		nodo.ultimo++;
-		nodo.mbr[nodo.ultimo].rect = rect;
-		nodo.mbr[nodo.ultimo].nodo_hijo = -1;
+		    nodo.ultimo++;
+		    nodo.mbr[nodo.ultimo].rect = rect;
+		    nodo.mbr[nodo.ultimo].nodo_hijo = -1;
 		
-		// persistir cambios en el archivo.
-		actualizar_nodo(nodo);
+		    // persistir cambios en el archivo.
+		    actualizar_nodo(nodo);
+        }
 	} else {
         printf("No es hoja. Buscar MBR de incremento mínimo.\n");
 		rect_area_inc_min = incremento_area(nodo.mbr[i_min], rect);	
@@ -158,7 +164,7 @@ void quadraticSplit(Nodo nodo, js)
 {
 	// El nodo tiene 2*T+1 MBR
 	int i;
-	int cantidad_pares = ((2*T+1)(2*T))/2;
+	int cantidad_pares = ((2*T+1)*(2*T))/2;
 	
 	// almacena las areas de cada par
 	float tamano_area[cantidad_pares];

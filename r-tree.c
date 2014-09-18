@@ -101,7 +101,7 @@ Nodo init_rtree(Rectangulo rect1, Rectangulo rect2) {
 
 	// crea el archivo
 	fptr = fopen(NAME_FILE, "w");
-    printf("Archivo %s creado exitosamente\n", NAME_FILE);
+    printf("Archivo %s creado exitosamente.\n", NAME_FILE);
 
 	fclose(fptr);
 	

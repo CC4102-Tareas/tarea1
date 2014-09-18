@@ -1,6 +1,6 @@
 
 #define TAMANO_PAGINA 4096 // tamaño de página del disco duro.
-#define T 123              // mínimo de hijos que puede tener un nodo (salvo la raíz)
+#define T 102              // mínimo de hijos que puede tener un nodo (salvo la raíz)
 
 /**
 	Definición de punto (x,y)
@@ -46,4 +46,3 @@ typedef struct
 	int ultimo;        // último indice ocupado en mbr.
 	MBR mbr[2*T];      // arreglo de MBR's
 } Nodo;
-
