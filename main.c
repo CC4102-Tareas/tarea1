@@ -7,9 +7,21 @@
 
 int main (int arc, char **argv) 
 {
-    printf("Tamaño de Nodo  -> %lu bytes\n", (unsigned long)sizeof(Nodo));
+    //=============================================================================
+    Rectangulo rect1, rect2;
+    Nodo nodo, prueba = init_rtree(rect1, rect2);
+    nodo.nodo_id = -1;
+    nodo.nodo_padre = 20;
+    insertar_nodo_en_disco(nodo);
+    nodo = leer_nodo_en_disco(1);
+    printf("nodo_padre: %d\n", nodo.nodo_padre);
+
+    return 0;
+
+    //=============================================================================
+    printf("Tamaño de Nodo  -> %lu bytes.\n", (unsigned long)sizeof(Nodo));
     
-    printf("Inicio de experimento\n");   
+    printf("Inicio de experimento.\n");
 	
     Nodo raiz;
     

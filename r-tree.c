@@ -16,7 +16,7 @@ Nodo leer_nodo_en_disco(int numero_nodo) {
 	FILE *fptr;
 	
 	// se abre el archivo para lectura
-	fptr = fopen(NAME_FILE, "r");
+	fptr = fopen(NAME_FILE, "r+");
 
 	if(fseek(fptr, numero_nodo*TAMANO_PAGINA, SEEK_SET)) {
 		printf("Error al intentar posicionarse en la página.");	
@@ -44,12 +44,12 @@ void insertar_nodo_en_disco(Nodo nodo) {
     int ultimo_nodo_id;
 
     // se abre el archivo para lectura
-    fptr = fopen(NAME_FILE, "w");
+    fptr = fopen(NAME_FILE, "r+");
     
     if (nodo.nodo_id == -1) {
         // se posiciona en el último nodo insertado
         if(fseek(fptr, -1*TAMANO_PAGINA, SEEK_END)) {
-            printf("Error al intentar posicionarse en el último no insertado.");
+            printf("Error al intentar posicionarse en el último nodo insertado.\n");
         }
         // se lee el id
 	    fread(&(ultimo_nodo_id), sizeof(int), 1, fptr);
@@ -77,7 +77,7 @@ void actualizar_nodo_en_disco(Nodo nodo) {
     FILE *fptr;
 
     // se abre el archivo para lectura
-    fptr = fopen(NAME_FILE, "w");
+    fptr = fopen(NAME_FILE, "r+");
 
     if(fseek(fptr, nodo.nodo_id*TAMANO_PAGINA, SEEK_SET)) {
         printf("Error al intentar posicionarse en la página.");

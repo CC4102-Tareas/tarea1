@@ -122,7 +122,7 @@ Nodo insertar(Nodo nodo, Rectangulo rect) {
             printf("-> Está lleno!!. Hacer split.\n");
             // genera dos nodos uno con T+1 rectangulos y otro con T.
             // aquí rertornamos uno de ellos, el que mantiene el id del viejo.
-            quadratic_split(nodo, rect);
+            //quadratic_split(nodo, rect);
 
             // rescatar ultima versión del nodo.
             nodo = leer_nodo_en_disco(nodo.nodo_id);
@@ -167,7 +167,7 @@ Nodo insertar(Nodo nodo, Rectangulo rect) {
 		actualizar_nodo_en_disco(nodo);
         
 		// buscar nodo hijo del MBR de incremento mínimo.
-		Nodo nodo_hijo = leer_nodo(nodo.mbr[i_min].nodo_hijo);
+		Nodo nodo_hijo = leer_nodo_en_disco(nodo.mbr[i_min].nodo_hijo);
 		insertar(nodo_hijo, rect);
 	}
     return nodo;
@@ -176,6 +176,13 @@ Nodo insertar(Nodo nodo, Rectangulo rect) {
 /*************************************************************************
 	Algoritmos para insertar
 **************************************************************************/
+
+/**
+    Función auxiliar. Calcula el incremento de área para quadratic_split
+*/
+float incremento_area_quadratic_split(Rectangulo rect1, Rectangulo rect2) {
+    return area(mbr_minimo(rect1, rect2)) - (area(rect1) + area(rect2));
+}
 
 /**
     Realiza la división de un nodo en dos en tiempo cuadratico.
@@ -220,11 +227,11 @@ void quadratic_split(Nodo nodo, Rectangulo rect)
     nodo1.mbr[nodo1.ultimo] = nodo.mbr[rect1];
 
     //TODO: evaluar si el padre ya está lleno.
-    //nodo2.nodo_id = ??;
+    nodo2.nodo_id = -1;
     nodo2.nodo_padre = nodo.nodo_padre;
     nodo2.pos_mbr_padre = nodo.pos_mbr_padre;
     nodo2.ultimo = 0;
-    if (rect == 2*T) {
+    if (rect2 == 2*T) {
         nodo2.mbr[nodo2.ultimo].rect = rect;
         nodo2.mbr[nodo2.ultimo].nodo_hijo = -1;
     } else {
@@ -242,13 +249,6 @@ void quadratic_split(Nodo nodo, Rectangulo rect)
 
         }
     }
-}
-
-/**
-    Función auxiliar. Calcula el incremento de área para quadratic_split
-*/
-float incremento_area_quadratic_split(Rectangulo rect1, Rectangulo rect2) {
-    return area(mbr_minimo(rect1, rect2)) - (area(rect1) + area(rect2));
 }
 
 /*
