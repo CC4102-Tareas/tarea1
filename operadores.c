@@ -122,19 +122,22 @@ Nodo insertar(Nodo nodo, Rectangulo rect) {
             printf("-> Está lleno!!. Hacer split.\n");
             // genera dos nodos uno con T+1 rectangulos y otro con T.
             // aquí rertornamos uno de ellos, el que mantiene el id del viejo.
-            nodo = linear_split(nodo, rect);
+            quadratic_split(nodo, rect);
+
+            // rescatar ultima versión del nodo.
+            nodo = leer_nodo_en_disco(nodo.nodo_id);
         // si tiene espacio, insertar un rectángulo.
         } else {
             MBR nueva_hoja;
 		    nueva_hoja.rect = rect;
 		    nueva_hoja.nodo_hijo = -1;
-		
+		    
 		    nodo.ultimo++;
 		    nodo.mbr[nodo.ultimo] = nueva_hoja;
-		}
-	    // persistir cambios en el archivo.
-	    actualizar_nodo(nodo);
-
+		
+	        // persistir cambios en el archivo.
+    	    actualizar_nodo_en_disco(nodo);        
+        }
 	} else {
         printf("No es hoja. Buscar MBR de incremento mínimo.\n");
         // se asume que el primer MBR tiene el área mínima.
@@ -161,7 +164,7 @@ Nodo insertar(Nodo nodo, Rectangulo rect) {
 		// persistir el incremento de área del MBR con indice i_min
 		nodo.mbr[i_min].rect = mbr_minimo(nodo.mbr[i_min].rect, rect);
         
-		actualizar_nodo(nodo);
+		actualizar_nodo_en_disco(nodo);
         
 		// buscar nodo hijo del MBR de incremento mínimo.
 		Nodo nodo_hijo = leer_nodo(nodo.mbr[i_min].nodo_hijo);
@@ -174,6 +177,9 @@ Nodo insertar(Nodo nodo, Rectangulo rect) {
 	Algoritmos para insertar
 **************************************************************************/
 
+/**
+    Realiza la división de un nodo en dos en tiempo cuadratico.
+*/
 void quadratic_split(Nodo nodo, Rectangulo rect)
 {
 	// El nodo tiene 2*T rect + rect = 2*T + 1 rect
@@ -193,6 +199,7 @@ void quadratic_split(Nodo nodo, Rectangulo rect)
                 area_tmp = incremento_area_quadratic_split(nodo.mbr[i].rect, nodo.mbr[j].rect);
             }
 
+            // se guardan los rectangulos que producen el incremento máximo.
             if (area_tmp > area_max) {
                 area_max = area_tmp;
                 rect1 = i;

@@ -1,5 +1,11 @@
 /**
 	Estructura que permite persistir un R-tree. 
+
+    Nodo leer_nodo_en_disco(int nodo_id)
+    void insertar_nodo_en_disco(Nodo nodo)
+    void actualizar_nodo_en_disco(Nodo nodo) {
+    Nodo init_rtree(Rectangulo rect1, Rectangulo rect2)
+
 */
 #define NAME_FILE "r-tree.estructura"
 
@@ -35,9 +41,20 @@ Nodo leer_nodo_en_disco(int numero_nodo) {
 */
 void insertar_nodo_en_disco(Nodo nodo) {
 	FILE *fptr;
+    int ultimo_nodo_id;
 
     // se abre el archivo para lectura
     fptr = fopen(NAME_FILE, "w");
+    
+    if (nodo.nodo_id == -1) {
+        // se posiciona en el último nodo insertado
+        if(fseek(fptr, -1*TAMANO_PAGINA, SEEK_END)) {
+            printf("Error al intentar posicionarse en el último no insertado.");
+        }
+        // se lee el id
+	    fread(&(ultimo_nodo_id), sizeof(int), 1, fptr);
+        nodo.nodo_id = ultimo_nodo_id+1;
+    }
 
 	// se posiciona al final del archivo
     if(fseek(fptr, 0, SEEK_END)) {
@@ -56,7 +73,7 @@ void insertar_nodo_en_disco(Nodo nodo) {
 /**
 	actualiza un nodo
 */
-actualizar_nodo_en_disco(Nodo nodo) {
+void actualizar_nodo_en_disco(Nodo nodo) {
     FILE *fptr;
 
     // se abre el archivo para lectura
