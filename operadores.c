@@ -26,25 +26,47 @@ float area(Rectangulo rect)
 }
 
 /**
-	Calcula el incremento de área de un mbr.
+    Calcula el mínimo entre dos valores. Función auxiliar
 */
-Rectangulo incremento_area(MBR mbr, Rectangulo rect) {
-	Rectangulo rect_inc;
-	Punto pto1;
-	Punto pto2;
-
-	pto1.x = 0;
-	pto1.y = 0;
-	
-	pto2.x = 1;
-	pto2.y = 1;
-
-	rect_inc.vert_inf_izq = pto1;
-	rect_inc.vert_sup_der = pto2;
-
-	return rect_inc;
+float min(float x, float y) {
+    if (x > y)
+        return y;
+    return x;
 }
 
+/**
+    Calcula el máximo entre dos valores. Función auxiliar
+*/
+float max(float x, float y) {
+    if (x > y)
+        return x;
+    return y;
+}
+
+Rectangulo mbr_minimo(MBR mbr, Rectangulo rect) {
+    Rectangulo rect_mbr, mbr_min;
+
+    rect_mbr = mbr.rect;
+
+    Punto pto1,pto2;
+
+    pto1.x=min(rect_mbr.vert_inf_izq.x, rect.vert_inf_izq.x);
+    pto1.y=min(rect_mbr.vert_inf_izq.y, rect.vert_inf_izq.y);
+    pto2.x=max(rect_mbr.vert_sup_der.x, rect.vert_sup_der.x);
+    pto2.y=max(rect_mbr.vert_sup_der.y, rect.vert_sup_der.y);
+    
+    mbr_min.vert_inf_izq = pto1;
+    mbr_min.vert_sup_der = pto2;
+
+    return mbr_min;
+}
+
+/**
+	Calcula el incremento de área de un mbr.
+*/
+float incremento_area(MBR mbr, Rectangulo rect) {
+    return area(mbr_minimo(mbr, rect)) - area(mbr.rect);
+}
 
 /**
 	busca un rectángulo dentro del R-Tree.
@@ -86,20 +108,16 @@ Dynamic_array* buscar(Nodo nodo, Rectangulo rect) {
 	Inserta un rectangulo en el arbol.
 */
 Nodo insertar(Nodo nodo, Rectangulo rect) {
-	int i, j;                     // iteradores
-	int i_min = 0;     	          // indice del MBR con menor incremento de área.
-	Rectangulo rect_area_inc_min; // rectángulo producto del incremento mínimo
-	Rectangulo rect_area_inc;     // variable para albergar el incremento de área en cada iteración del for
+	int i, j;           // iteradores
+	int i_min = 0;     	// indice del MBR con menor incremento de área.
+	float area_inc_min; // valor del incremento mínimo de área.
+	float area_inc;     // variable para albergar el incremento de área en cada iteración del for
 	
 	// si el nodo es un nodo hoja (su primer MBR es una hoja).
 	// insertar rectangulo como un MBR
     // TODO: Verificar si está lleno y agregar split.
 
-    //printf("nodo_id=%d\n", nodo.nodo_id);
-    //printf("nodo_padre=%d\n", nodo.nodo_padre);
-    //printf("pos_mbr_padre=%d\n", nodo.pos_mbr_padre);
     printf("nodo_ultimo=%d\n", nodo.ultimo);
-    //printf("nodo_hijo=%d\n", nodo.mbr[0].nodo_hijo);
 	if (nodo.mbr[0].nodo_hijo == -1) {
         printf("Insertar rectangulo.\n");
 		
@@ -121,32 +139,31 @@ Nodo insertar(Nodo nodo, Rectangulo rect) {
         }
 	} else {
         printf("No es hoja. Buscar MBR de incremento mínimo.\n");
-		rect_area_inc_min = incremento_area(nodo.mbr[i_min], rect);	
+        // se asume que el primer MBR tiene el área mínima.
+		area_inc_min = incremento_area(nodo.mbr[i_min], rect);	
 
 		// recorremos los MBR's del nodo e identificamos el de menor área.
-		for(i=0;i<=nodo.ultimo;i++) {		
-			// calcular el incremento de área para cada MBR
-			rect_area_inc = incremento_area(nodo.mbr[i], rect);
+		for(i=1;i<=nodo.ultimo;i++) {		
+			// calcular el incremento de área
+		    area_inc = incremento_area(nodo.mbr[i], rect);
 			
-			// se asume que el primer MBR es la mín área
-			if (i > 0) {
-				if (area(rect_area_inc) < area(rect_area_inc_min)) {
+			if (area_inc < area_inc_min) {
+				i_min = i;
+				area_inc_min = area_inc;
+			// si los incrementos son iguales => elegir MBR de menor área
+			} else if (area_inc == area_inc_min) {				
+				if (area(nodo.mbr[i].rect) < area(nodo.mbr[i_min].rect)) {
 					i_min = i;
-					rect_area_inc_min = incremento_area(nodo.mbr[i_min], rect);
-				// si los incrementos son iguales => elegir el de menor área
-				} else if (area(rect_area_inc) == area(rect_area_inc_min)) {				
-					if (area(nodo.mbr[i].rect) < area(nodo.mbr[i_min].rect)) {
-						i_min = i;
-						rect_area_inc_min = incremento_area(nodo.mbr[i_min], rect);
-					} 
-					// si las areas son iguales nos quedamos con el primer área mínima que encontramos.
-					// i.e. no se hace nada más
-				}
+					area_inc_min = incremento_area(nodo.mbr[i_min], rect);
+				} 
+				// si las areas son iguales nos quedamos con el primer área mínima que encontramos.
+				// i.e. no se hace nada más
 			}
 		}
 	
 		// persistir el incremento de área del MBR con indice i_min
-		nodo.mbr[i_min].rect = rect_area_inc_min;
+		nodo.mbr[i_min].rect = mbr_minimo(nodo.mbr[i_min], rect);
+        
 		actualizar_nodo(nodo);
 
 		// buscar nodo hijo del MBR de incremento mínimo.
