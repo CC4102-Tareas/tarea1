@@ -21,9 +21,9 @@ Nodo leer_nodo(int numero_nodo) {
 	//crear nodo con los datos leidos
 	fread(&(nodo.nodo_id), sizeof(int), 1, fptr);
 	fread(&(nodo.nodo_padre), sizeof(int), 1, fptr);
-        fread(&(nodo.pos_mbr_padre), sizeof(int), 1, fptr);
-        fread(&(nodo.ultimo), sizeof(int), 1, fptr);
-        fread(&(nodo.nodo_padre), sizeof(MBR), 2*T, fptr);
+    fread(&(nodo.pos_mbr_padre), sizeof(int), 1, fptr);
+    fread(&(nodo.ultimo), sizeof(int), 1, fptr);
+    fread(&(nodo.nodo_padre), sizeof(MBR), 2*T, fptr);
 
 	fclose(fptr);
 
@@ -36,43 +36,43 @@ Nodo leer_nodo(int numero_nodo) {
 void insertar_nodo(Nodo nodo) {
 	FILE *fptr;
 
-        // se abre el archivo para lectura
-        fptr = fopen(NAME_FILE, "w");
+    // se abre el archivo para lectura
+    fptr = fopen(NAME_FILE, "w");
 
 	// se posiciona al final del archivo
-        if(fseek(fptr, 0, SEEK_END)) {
-                printf("Error al intentar posicionarse en la página.");
-        }
+    if(fseek(fptr, 0, SEEK_END)) {
+        printf("Error al intentar posicionarse en la página.");
+    }
 
 	fwrite(&(nodo.nodo_id), sizeof(int), 1, fptr);
 	fwrite(&(nodo.nodo_padre), sizeof(int), 1, fptr);
 	fwrite(&(nodo.pos_mbr_padre), sizeof(int), 1, fptr);
 	fwrite(&(nodo.ultimo), sizeof(int), 1, fptr);
-        fwrite(&(nodo.mbr), sizeof(MBR), 2*T, fptr);
+    fwrite(&(nodo.mbr), sizeof(MBR), 2*T, fptr);
 
-        fclose(fptr);
+    fclose(fptr);
 }
 
 /**
 	actualiza un nodo
 */
 actualizar_nodo(Nodo nodo) {
-        FILE *fptr;
+    FILE *fptr;
 
-        // se abre el archivo para lectura
-        fptr = fopen(NAME_FILE, "w");
+    // se abre el archivo para lectura
+    fptr = fopen(NAME_FILE, "w");
 
-        if(fseek(fptr, nodo.nodo_id*TAMANO_PAGINA, SEEK_SET)) {
-                printf("Error al intentar posicionarse en la página.");
-        }
+    if(fseek(fptr, nodo.nodo_id*TAMANO_PAGINA, SEEK_SET)) {
+        printf("Error al intentar posicionarse en la página.");
+    }
 
 	fwrite(&(nodo.nodo_id), sizeof(int), 1, fptr);
-        fwrite(&(nodo.nodo_padre), sizeof(int), 1, fptr);
-        fwrite(&(nodo.pos_mbr_padre), sizeof(int), 1, fptr);
-        fwrite(&(nodo.ultimo), sizeof(int), 1, fptr);
-        fwrite(&(nodo.mbr), sizeof(MBR), 2*T, fptr);
+    fwrite(&(nodo.nodo_padre), sizeof(int), 1, fptr);
+    fwrite(&(nodo.pos_mbr_padre), sizeof(int), 1, fptr);
+    fwrite(&(nodo.ultimo), sizeof(int), 1, fptr);
+    fwrite(&(nodo.mbr), sizeof(MBR), 2*T, fptr);
 
-        fclose(fptr);
+    fclose(fptr);
 }
 /**
 	elimina un nodo
@@ -93,7 +93,7 @@ Nodo init_rtree(Rectangulo rect1, Rectangulo rect2) {
 	status = remove(NAME_FILE);
  
 	if(status == 0)
-		printf("%s archivo eliminado.\n", NAME_FILE);
+		printf("Archivo %s eliminado.\n", NAME_FILE);
 	else {	
 		//printf("Incapaz de eliminar archivo.\n");
 		//perror("Error");
@@ -101,6 +101,7 @@ Nodo init_rtree(Rectangulo rect1, Rectangulo rect2) {
 
 	// crea el archivo
 	fptr = fopen(NAME_FILE, "w");
+    printf("Archivo %s creado exitosamente\n", NAME_FILE);
 
 	fclose(fptr);
 	
@@ -124,6 +125,8 @@ Nodo init_rtree(Rectangulo rect1, Rectangulo rect2) {
     nodo.mbr[0] = mbr1;
     nodo.mbr[1] = mbr2;
 	
-	insertar_nodo(nodo);
+    insertar_nodo(nodo);
+
+    return nodo;
 }
 

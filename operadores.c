@@ -85,7 +85,7 @@ Dynamic_array* buscar(Nodo nodo, Rectangulo rect) {
 /**
 	Inserta un rectangulo en el arbol.
 */
-void insertar(Nodo nodo, Rectangulo rect) {
+Nodo insertar(Nodo nodo, Rectangulo rect) {
 	int i, j;                     // iteradores
 	int i_min = 0;     	          // indice del MBR con menor incremento de área.
 	Rectangulo rect_area_inc_min; // rectángulo producto del incremento mínimo
@@ -94,7 +94,12 @@ void insertar(Nodo nodo, Rectangulo rect) {
 	// si el nodo es un nodo hoja (su primer MBR es una hoja).
 	// insertar rectangulo como un MBR
     // TODO: Verificar si está lleno y agregar split.
-    printf("nodo_hijo=%d\n", nodo.mbr[0].nodo_hijo);
+
+    //printf("nodo_id=%d\n", nodo.nodo_id);
+    //printf("nodo_padre=%d\n", nodo.nodo_padre);
+    //printf("pos_mbr_padre=%d\n", nodo.pos_mbr_padre);
+    printf("nodo_ultimo=%d\n", nodo.ultimo);
+    //printf("nodo_hijo=%d\n", nodo.mbr[0].nodo_hijo);
 	if (nodo.mbr[0].nodo_hijo == -1) {
         printf("Insertar rectangulo.\n");
 		
@@ -142,6 +147,7 @@ void insertar(Nodo nodo, Rectangulo rect) {
 		Nodo nodo_hijo = leer_nodo(nodo.mbr[i_min].nodo_hijo);
 		insertar(nodo_hijo, rect);
 	}
+    return nodo;
 }
 
 /*************************************************************************

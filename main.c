@@ -6,10 +6,44 @@
 #include "operadores.c"
 
 /**
-	MAIN
+	TEST
 */
 int main (int arc, char **argv) 
 {
+    /********************************************************
+    Prueba para r-tree.c
+    *********************************************************/
+    /*
+    Punto x1, x2;
+    Rectangulo rect1, rect2;
+
+    x1.x = 0;x1.y = 0;
+    x2.x = 1;x2.y = 1;
+    rect1.vert_inf_izq = x1;rect1.vert_sup_der = x2;
+
+    x1.x = 1;x1.y = 1;
+    x2.x = 2;x2.y = 2;
+    rect2.vert_inf_izq = x1;rect2.vert_sup_der = x2;
+
+    Nodo nodo = init_rtree(rect1, rect2);
+
+    printf("nodo_id=%d|0\n", nodo.nodo_id);
+    printf("nodo_padre=%d|0\n", nodo.nodo_padre);
+    printf("pos_mbr_padre=%d|0\n", nodo.pos_mbr_padre);
+    printf("nodo_ultimo=%d|1\n", nodo.ultimo);
+    printf("nodo.mbr[0].nodo_hijo=%d|-1\n", nodo.mbr[0].nodo_hijo);    
+    printf("nodo.mbr[1].nodo_hijo=%d|-1\n", nodo.mbr[1].nodo_hijo);    
+    */
+    /********************************************************
+    Prueba para operadores.c
+    *********************************************************/
+
+
+
+    /********************************************************
+    Prueba general
+    *********************************************************/
+    
     printf("Inicio de experimento\n");   
 	Nodo raiz;
     
@@ -35,7 +69,7 @@ int main (int arc, char **argv)
             raiz = init_rtree(rect0, rect);
             printf("Inicialización de r-tree\n");
         } else {
-            insertar(raiz, rect);
+            raiz = insertar(raiz, rect);
             printf("Se inserta rectangulo.\n");
         }
 	}
