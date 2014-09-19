@@ -54,6 +54,7 @@ void insertar_nodo_en_disco(Nodo nodo) {
         // se lee el id
 	    fread(&(ultimo_nodo_id), sizeof(int), 1, fptr);
         nodo.nodo_id = ultimo_nodo_id+1;
+        printf("nodo_id= %d\n", ultimo_nodo_id+1);
     }
 
 	// se posiciona al final del archivo

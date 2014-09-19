@@ -237,18 +237,100 @@ void quadratic_split(Nodo nodo, Rectangulo rect)
     } else {
         nodo2.mbr[nodo2.ultimo] = nodo.mbr[rect2];
     }
+    
+    //TODO: mantener un rectangulo que representa el mbr que va en el padre para cada nodo.
+    // esto es util para ir calculando el incremento de área en la iteración.
+    Rectangulo mbr1, mbr2;
+    float area_inc1, area_inc2;
 
-    // aquí ya tenemos los dos nuevos nodos con su rectangulo inicial.
+    // en un principio seŕá = al rectangulo inicial.
+    mbr1 = nodo1.mbr[nodo1.ultimo].rect;
+    mbr2 = nodo2.mbr[nodo2.ultimo].rect;
+
+    // aquí ya tenemos los dos nuevos nodos con su rectangulo inicial. Además tenemos el mbr
+    // de cada grupo.
     
     // iteramos sobre los elementos
     for(i=0;i<(2*T+1);i++) {
-        // si debo procesar el rectangulo 2*T+1 y no fue asignado al inicio => lo proceso.
-        if (i == 2*T && rect2 != 2*T) {
-            
-        } else if (i != rect1 && i != rect2) {
+        // se saltan los escogidos al inicio.
+        if (i != rect1 && i != rect2) {
+            // si alguno completó su minimo     
+            if (nodo1.ultimo == T+1) {
+                nodo2.ultimo++;
+                if (i==2*T) {           
+                    nodo2.mbr[nodo2.ultimo].rect = rect;
+                    mbr2 = mbr_minimo(mbr2, rect);
+                } else {
+                    nodo2.mbr[nodo2.ultimo].rect = nodo.mbr[i].rect;
+                    mbr2 = mbr_minimo(mbr2, nodo.mbr[i].rect);
+                }
+                continue;
+            } else if (nodo2.ultimo == T+1) {
+                nodo1.ultimo++;
+                if (i==2*T) {           
+                    nodo1.mbr[nodo1.ultimo].rect = rect;
+                    mbr1 = mbr_minimo(mbr1, rect);
+                } else {
+                    nodo1.mbr[nodo1.ultimo].rect = nodo.mbr[i].rect;
+                    mbr1 = mbr_minimo(mbr1, nodo.mbr[i].rect);
+                }
+                continue;
+            }
 
+            // si debo procesar el rectangulo 2*T+1 dado que no fue asignado al inicio => lo proceso.
+            if (i == 2*T) {
+                area_inc1 = incremento_area_quadratic_split(mbr1, rect);
+                area_inc2 = incremento_area_quadratic_split(mbr2, rect);
+            } else if (i != rect1 && i != rect2) {
+                area_inc1 = incremento_area_quadratic_split(mbr1, nodo.mbr[i].rect);
+                area_inc2 = incremento_area_quadratic_split(mbr2, nodo.mbr[i].rect);
+            }
+        
+            //TODO: verificar si falta una condición aquí.
+            if (area_inc1 < area_inc2) {
+                nodo1.ultimo++;
+                if (i==2*T) {           
+                    nodo1.mbr[nodo1.ultimo].rect = rect;
+                    mbr1 = mbr_minimo(mbr1, rect);
+                } else {
+                    nodo1.mbr[nodo1.ultimo].rect = nodo.mbr[i].rect;
+                    mbr1 = mbr_minimo(mbr1, nodo.mbr[i].rect);
+                }
+                nodo1.mbr[nodo1.ultimo].nodo_hijo = -1;
+            } else {
+                nodo2.ultimo++;
+                if (i==2*T) {
+                    nodo2.mbr[nodo2.ultimo].rect = rect;
+                    mbr2 = mbr_minimo(mbr1, rect);
+                } else {
+                    nodo2.mbr[nodo2.ultimo].rect = nodo.mbr[i].rect;
+                    mbr2 = mbr_minimo(mbr1, nodo.mbr[i].rect);
+                }
+                nodo2.mbr[nodo2.ultimo].nodo_hijo = -1;
+            }
         }
     }
+
+    // en este punto los dos nodos tienen todos los rectangulos asignados.
+    // uno con T+1 y el otro con T.
+
+    Nodo nodo_padre = leer_nodo_en_disco(nodo.nodo_padre);
+
+    // se modifica el nodo viejo que se dividió.
+    // el identificador sigue siendo el mismo por lo que no se modifica.
+    nodo_padre.mbr[nodo.pos_mbr_padre].rect = mbr1;
+
+    if (nodo_padre.ultimo == 2*T) {        
+        quadratic_split(nodo_padre, nodo2);
+    } else {
+        // se agrega el nuevo nodo.
+        nodo_padre.ultimo++;
+        nodo_padre.mbr[nodo_padre.ultimo].rect = mbr2;
+        nodo_padre.nodo_hijo = nodo2.nodo_id;
+
+        actualizar_nodo_en_disco(nodo_padre);
+    }
+
 }
 
 /*
