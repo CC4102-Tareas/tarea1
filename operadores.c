@@ -333,10 +333,37 @@ void quadratic_split(Nodo nodo, Rectangulo rect)
 
 }
 
-/*
-void linear_split()
-{
+
+void linear_split(Nodo nodo, Rectangulo rect) {
 	
+    int i; // itearador
+    // se asume que el primer indice es el de menor y mayor distancia
+    // en ambas dimensiones.
+    int id_min_lado_mayor_x=0, id_max_lado_menor_x=0;
+    int id_min_lado_mayor_y=0, id_max_lado_menor_y=0;
+
+    for(i=1;i<=(2*T+1);i++) {
+        // ocupar rect
+        if (i==2*T) {
+            // buscamos el lado mayor mínimo en el eje X.
+            if (rect.vert_sup_der.x < nodo.mbr[id_min_lado_mayor_x].rect.vert_sup_der.x) {
+                id_min_lado_mayor_x = i;
+            } 
+            // buscamos el lado menor maximo en el eje x
+            if (rect.vert_inf_izq.x > nodo.mbr[id_max_lado_menor_x].rect.vert_inf_izq.x) {
+                id_max_lado_menor_x = i;
+            }
+        } else {
+            
+        }
+    }
+
+
+
+
+
+
+
 }
-*/
+
 
