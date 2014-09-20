@@ -73,7 +73,7 @@ Dynamic_array* buscar(Nodo nodo, Rectangulo rect) {
 	
 	Dynamic_array *rects; // arreglo dinámico de rectangulos
 	initArray(rects, 1);
-				
+    
 	// recorremos los MBR's del nodo
 	for(i=0;i<=nodo.ultimo;i++) {
 		// si el rectangulo se intersecta con un MBR
@@ -104,7 +104,7 @@ Dynamic_array* buscar(Nodo nodo, Rectangulo rect) {
 /**
 	Inserta un rectangulo en el arbol.
 */
-Nodo insertar(Nodo nodo, Rectangulo rect) {
+void insertar(Nodo nodo, Rectangulo rect) {
 	int i, j;           // iteradores
 	int i_min = 0;     	// indice del MBR con menor incremento de área.
 	float area_inc_min; // valor del incremento mínimo de área.
@@ -121,10 +121,75 @@ Nodo insertar(Nodo nodo, Rectangulo rect) {
             printf("-> Está lleno!!. Hacer split.\n");
             // genera dos nodos uno con T+1 rectangulos y otro con T.
             // aquí rertornamos uno de ellos, el que mantiene el id del viejo.
-            //quadratic_split(nodo, rect);
+            Resultado_split nuevos_nodos = quadratic_split(nodo, rect);
+            
+            actualizar_nodo_en_disco(nuevos_nodos.nodo1);
 
-            // rescatar ultima versión del nodo.
-            nodo = leer_nodo_en_disco(nodo.nodo_id);
+            nuevos_nodos.nodo2
+
+            // si es la raiz
+            if (nodo.nodo_padre == -1) {
+                Nodo raiz;
+
+                ultimo_id_utilizado++; // variable global creada en el main para el .
+                raiz.nodo_id = nuevo_id;
+                raiz.nodo_padre = -1;
+                raiz.pos_mbr_padre = -1;
+                raiz.ultimo = 1;
+
+                raiz.mbr[0].rect = nuevos_nodos.mbr1;
+                raiz.mbr[0].nodo_hijo = nuevos_nodos.nodo1.nodo_id;
+                raiz.mbr[1].rect = nuevos_nodos.mbr2;
+                raiz.mbr[1].nodo_hijo = nuevos_nodos.nodo2.nodo_id;
+                
+                insertar_nodo_en_disco(raiz);
+            } else {                
+                Nodo nodo_padre = leer_nodo_en_disco(nodo.nodo_padre);
+            
+            
+                insertar_nodo_en_disco(nuevos_nodos.nodo2);
+
+                // si el padre está lleno
+                if (nodo_padre.ultimo == 2*T-1) {
+
+                    quadratic_split(nodo_padre, nuevos_nodos.mbr2);
+                // entonces hay espacio. Puede ser un piso intermedio.
+                } else {
+                    // se agrega el nuevo nodo al padre.
+                    nodo_padre.ultimo++;
+                    nodo_padre.mbr[nodo_padre.ultimo].rect = nuevos_nodos.mbr2;
+                    nodo_padre.mbr[nodo_padre.ultimo].nodo_hijo = nuevos_nodos.nodo2.nodo_id;
+                    
+                    // se actualiza el mbr del nodo padre de ambos.
+                    nodo_padre.mbr[nuevos_nodos.nodo1.pos_mbr_padre].rect = nuevos_nodos.mbr1;
+                    
+                    // actualizamos la referencia al padre de nodo1.
+                    nuevos_nodos.nodo1.nodo_padre = nodo.nodo_padre;
+                    nuevos_nodos.nodo1.pos_mbr_padre = nodo.pos_mbr__padre;
+
+                    // actualizamos la referencia al padre de nodo2.
+                    nuevos_nodos.nodo2.nodo_padre = nodo_padre.nodo_id;
+                    nuevos_nodos.nodo2.pos_mbr_padre = nodo_padre.ultimo;
+
+                    actualizar_nodo_en_disco(nuevos_nodos.nodo1);
+                    actualizar_nodo_en_disco(nodo_padre);
+                    insertar_nodo_en_disco(nuevos_nodos.nodo2);
+
+                    // se actualizan las referencias de los nodos hijos.
+                    Nodo nodo_aux;
+                    for(i=0;nuevos_nodos.nodo1.ultimo;i++) {
+                         nodo_aux = leer_nodo_en_disco(nuevos_nodos.nodo1.mbr[i].nodo_hijo);
+                         nodo_aux.pos_mbr_padre = i;
+                         actualizar_nodo_en_disco(nodo_aux);
+                    }
+
+                    for(i=0;nuevos_nodos.nodo2.ultimo;i++) {
+                         nodo_aux = leer_nodo_en_disco(nuevos_nodos.nodo1.mbr[i].nodo_hijo);
+                         nodo_aux.pos_mbr_padre = i;
+                         actualizar_nodo_en_disco(nodo_aux);
+                    }
+                }
+            }               
         // si tiene espacio, insertar un rectángulo.
         } else {
             MBR nueva_hoja;
@@ -169,7 +234,6 @@ Nodo insertar(Nodo nodo, Rectangulo rect) {
 		Nodo nodo_hijo = leer_nodo_en_disco(nodo.mbr[i_min].nodo_hijo);
 		insertar(nodo_hijo, rect);
 	}
-    return nodo;
 }
 
 /*************************************************************************
@@ -186,7 +250,7 @@ float incremento_area_split(Rectangulo rect1, Rectangulo rect2) {
 /**
     Realiza la división de un nodo en dos en tiempo cuadratico.
 */
-void quadratic_split(Nodo nodo, Rectangulo rect)
+Resultado_split quadratic_split(Nodo nodo, Rectangulo rect)
 {
 	// El nodo tiene 2*T rect + rect = 2*T + 1 rect
 	int i, j;           // iteradores
@@ -219,16 +283,15 @@ void quadratic_split(Nodo nodo, Rectangulo rect)
 
     Nodo nodo1, nodo2;
 
-    nodo1.nodo_id = nodo.nodo_id;
-    nodo1.nodo_padre = nodo.nodo_padre;
-    nodo1.pos_mbr_padre = nodo.pos_mbr_padre;
+    // nodo1.nodo_id = -> se asigna en insert
+    // nodo1.nodo_padre = -> se asigna en insert
+    // nodo1.pos_mbr_padre = -> se asigna en insert
     nodo1.ultimo = 0;
     nodo1.mbr[0] = nodo.mbr[rect1];
 
-    nodo2.nodo_id = -1;
-    // al final se evalua si sigue con el mismo padre
-    nodo2.nodo_padre = nodo.nodo_padre;
-    nodo2.pos_mbr_padre = nodo.pos_mbr_padre;
+    // nodo2.nodo_id = -> se asigna en insert
+    // nodo2.nodo_padre = -> se asigna en insert;
+    // nodo2.pos_mbr_padre = -> se asigna en insert;
     nodo2.ultimo = 0;
     if (rect2 == 2*T) {
         nodo2.mbr[0].rect = rect;
@@ -311,27 +374,17 @@ void quadratic_split(Nodo nodo, Rectangulo rect)
             }
         }
     }
-
+    
     // en este punto los dos nodos tienen todos los rectangulos asignados.
     // uno con T+1 y el otro con T.
+    
+    Resultado_split resp;
+    resp.nodo1 = nodo1;
+    resp.nodo2 = nodo2;
+    resp.mbr1 = mbr1;
+    resp.mbr2 = mbr2;
 
-    Nodo nodo_padre = leer_nodo_en_disco(nodo.nodo_padre);
-
-    // se modifica el nodo viejo que se dividió.
-    // el identificador sigue siendo el mismo por lo que no se modifica.
-    nodo_padre.mbr[nodo.pos_mbr_padre].rect = mbr1;
-
-    if (nodo_padre.ultimo == 2*T) {        
-        quadratic_split(nodo_padre, nodo2);
-    } else {
-        // se agrega el nuevo nodo.
-        nodo_padre.ultimo++;
-        nodo_padre.mbr[nodo_padre.ultimo].rect = mbr2;
-        nodo_padre.nodo_hijo = nodo2.nodo_id;
-
-        actualizar_nodo_en_disco(nodo_padre);
-    }
-
+    return resp;
 }
 
 

@@ -39,14 +39,9 @@ void insertar_nodo_en_disco(Nodo nodo) {
 	FILE *fptr;
     int ultimo_nodo_id;
 
-    // se abre el archivo para lectura
+    // se abre el archivo para lectura. En la posición final.
     fptr = fopen(NAME_FILE, "a+b");
     
-	// se posiciona al final del archivo
-    //if(fseek(fptr, 0, SEEK_END)) {
-    //    printf("Error al intentar posicionarse en la página.");
-    //}
-
 	fwrite(&(nodo), sizeof(Nodo), 1, fptr);
 
     fclose(fptr);
@@ -79,7 +74,7 @@ void actualizar_nodo_en_disco(Nodo nodo) {
 	Crea un archivo de nombre 'r-tree.estructura' y retorna el
 	nodo raiz del r.tree
 */
-Nodo init_rtree() {
+void init_rtree() {
 	FILE *fptr;
  
 	// crea el archivo
@@ -94,7 +89,4 @@ Nodo init_rtree() {
 	nodo.ultimo = -1; // está vacío
     
     insertar_nodo_en_disco(nodo);
-
-    return nodo;
 }
-
