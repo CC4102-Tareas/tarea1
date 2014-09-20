@@ -46,3 +46,15 @@ typedef struct
 	int ultimo;        // último indice ocupado en mbr.
 	MBR mbr[2*T];      // arreglo de MBR's
 } Nodo;
+
+/**
+    Resultado de la operación split.
+*/
+typedef struct
+{
+    Nodo nodo1;
+    Nodo nodo2;
+    Rectangulo mbr1;
+    Rectangulo mbr1;
+} Resultado_split;
+
